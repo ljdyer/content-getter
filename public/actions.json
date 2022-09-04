@@ -1,14 +1,28 @@
 [
     {
-        "id": "selection",
-        "displayName": "Get selection",
+        "id": "selection_word",
+        "displayName": "Selection ⇒ Word",
         "contexts": [
             "all"
         ]
     },
     {
-        "id": "summary",
-        "displayName": "Get summary",
+        "id": "summary_clipboard",
+        "displayName": "Jira summary ⇒ clipboard",
+        "contexts": [
+            "all"
+        ]
+    },
+    {
+        "id": "summary_word",
+        "displayName": "Jira summary ⇒ Word",
+        "contexts": [
+            "all"
+        ]
+    },
+    {
+        "id": "summary_desc_clipboard",
+        "displayName": "Jira summary + description ⇒ Word",
         "contexts": [
             "all"
         ]
