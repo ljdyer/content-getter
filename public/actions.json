@@ -1,0 +1,16 @@
+[
+    {
+        "id": "selection",
+        "displayName": "Get selection",
+        "contexts": [
+            "all"
+        ]
+    },
+    {
+        "id": "summary",
+        "displayName": "Get summary",
+        "contexts": [
+            "all"
+        ]
+    }
+]
