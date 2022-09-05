@@ -1,28 +1,37 @@
 [
     {
-        "id": "selection_word",
+        "id": "jira_selection_word",
         "displayName": "Selection ⇒ Word",
         "contexts": [
             "all"
         ]
     },
     {
-        "id": "summary_clipboard",
+        "id": "jira_summary_clipboard",
         "displayName": "Jira summary ⇒ clipboard",
         "contexts": [
             "all"
         ]
     },
     {
-        "id": "summary_word",
+        "id": "jira_summary_word",
         "displayName": "Jira summary ⇒ Word",
         "contexts": [
             "all"
         ]
     },
     {
-        "id": "summary_desc_clipboard",
+        "id": "jira_summary_desc_clipboard",
         "displayName": "Jira summary + description ⇒ Word",
+        "contexts": [
+            "all"
+        ]
+    },
+    {
+        "id": "wikipedia_heading_contents_word",
+        "displayName": "Wikipedia top heading + ToC ⇒ Word",
+        "source": ["firstHeading,toc"],
+        "target": "word",
         "contexts": [
             "all"
         ]

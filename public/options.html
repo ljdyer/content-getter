@@ -1,23 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head><title>My Test Extension Options</title></head>
+<head><title>Quick Content Getter options</title></head>
 <body>
-
-<p>Input DOM IDs, separated by commas:<p>
-
-<div>
-    <input type="text" id="idList">&nbsp<a href="#" id="clear">clear</a>
-</div>
-
-<div id="status"></div>
-
-<div><button id="save">Save</button></div>
-
-<div>
-    <p>Presets:</p>
-    <p><a href="#" id="wikipedia">Wikipedia heading and ToC</a></p>
-</div>
-
-<script src="options.js"></script>
+    <p>Select action to execute when extension icon is clicked:</p>
+    <select id="default-action-select"></select>
+    <script src="thirdParty/jquery-3.6.0.min.js"></script>
+    <script src="options.js"></script>
 </body>
 </html>

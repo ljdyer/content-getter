@@ -1,4 +1,4 @@
-// Store 
+// Get actions from actions.json
 fetch(chrome.runtime.getURL('/actions.json'))
   .then((resp) => resp.json())
   .then(function (respJson) {
@@ -6,62 +6,110 @@ fetch(chrome.runtime.getURL('/actions.json'))
   });
 
 
+// Get default action from storage
+chrome.storage.sync.get({
+  defaultAction: ""
+}, function (items) {
+  defaultAction = items.defaultAction;
+  if (defaultAction === ""){
+    defaultAction = actions[0].id;
+  }
+  console.log("Default action is: " + defaultAction);
+});
+
+
 // Handle messages from the background script
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     msg = request.message;
     console.log('Received message: ' + msg);
-    var action = actions.filter(obj => {
-      return obj.id === msg;
-    });
-    console.log(action);
     sendResponse('Message received');
+    if (msg === "default_action") {
+      actionId = defaultAction;
+    } else {
+      actionId = msg;
+    }
+    var action = actions.find(obj => {
+      return obj.id === actionId;
+    });
+    console.log("Performing action: " + action.id);
+    performAction(action);
   }
 );
 
 
-// function getAllText(storageItems){
-//   let list = storageItems.idList;
+function performAction(action) {
+  /**
+   * Perform the given action
+   * @param {object} action The action to perform
+   */
+  if (action.hasOwnProperty('source')){
+    source = action.source
+  } else {
+    throw new Error(`Action ${action.id} does not have source property`)
+  }
+  if (action.hasOwnProperty('target')){
+    target = action.target
+  } else {
+    throw new Error(`Action ${action.id} does not have target property`)
+  }
+  if (typeof source === 'object' & target === "word"){
+    idTextToWord(action.source);
+  }
+}
 
-//   let elementIds = splitAndTrim(list);
-//   let elementText = elementIds.map(getElementText);
-//   let elementTextWithBlankLines = intersperse(elementText, "");
-//   let lines = elementTextWithBlankLines.map(splitByLineBreak).flat();
 
-//   console.log(lines);
-//   makeDoc(lines);
-// }
+function idTextToWord(ids){
+  let text = ids.map(getElementText);
+  let textWithBlankLines = intersperse(text, "");
+  let lines = textWithBlankLines.map(splitByLineBreak).flat();
+  makeDoc(lines);
+}
 
-// function getElementText(elementId){
-//   let elementText = $(`#${elementId}`).text().trim();
-//   return elementText;
-// }
 
-// function splitAndTrim(commaList){
-//   result = commaList.split(",").map(trimString);
-//   return result;
-// }
+function getElementText(elementId){
+  /**
+   * Get the text from a DOM element
+   * @param {String} elementId The id of the element to get text from
+   * @return {String} The text from the element
+   */
+  $element = $(`#${elementId}`)
+  if (!($element.length)){
+    throw new Error(`This page does not have an element with id ${elementId}`);
+  }
+  let elementText = $element.text().trim();
+  return elementText;
+}
 
-// function splitByLineBreak(text){
-//   let result = text.split("\n");
-//   return result;
-// }
 
-// function intersperse(array, seperator){
-//   result = array.flatMap(e => [seperator,e]).slice(1);
-//   return result;
-// }
+function splitByLineBreak(text){
+  /**
+   * Split a string by line break characters
+   * @param {String} text The input text
+   * @return {Array.<String>} An array of lines from the input text
+   */
+  let result = text.split("\n");
+  return result;
+}
 
-// function trimString(string){
-//   return string.trim();
-// }
+function intersperse(array, seperator){
+  /**
+   * Place the seperator between every adjacent element in the input array
+   * @param {Array} array The array to add elements to
+   * @param {*} seperator The element to interperse
+   * @return {Array} The interspersed array
+   */
+  result = array.flatMap(e => [seperator,e]).slice(1);
+  return result;
+}
 
-function makeDoc(text){
+
+function makeDoc(lines){
   /**
    * Generate a Word document containing the text provided
-   * !!! @param {String} text The text to include in the Word document
+   * @param {Array} lines An array of lines of text
    */
-  let paragraphs = text.map(paragraphFromText);
+  let paragraphs = lines.map(paragraphFromText);
   const doc = new docx.Document({
     sections: [
       {

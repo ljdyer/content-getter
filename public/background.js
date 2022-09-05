@@ -1,7 +1,7 @@
-// Extension icon action
+// Extension icon click action
 chrome.action.onClicked.addListener(function(tab) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { "message": "clicked_browser_action" }, function(response) {
+    chrome.tabs.sendMessage(tabs[0].id, { "message": "default_action" }, function(response) {
       console.log('Sent message: ' + info)
     });
   });
@@ -26,8 +26,8 @@ chrome.runtime.onInstalled.addListener(function() {
           { id: item.id, title: item.displayName, contexts: item.contexts }
         )
       )
-    })
-})
+    });
+});
 
 // Handle context menu clicks
 function contextClick(info, tab) {

@@ -1,39 +1,49 @@
 // Saves options to chrome.storage
-function save_options() {
-  var idList = document.getElementById('idList').value;
+function saveDefaultAction() {
+  var selectedId = $('#default-action-select').children(":selected").val();
   chrome.storage.sync.set({
-    idList: idList,
+    defaultAction: selectedId,
   }, function() {
-    // Update status to let user know options were saved.
-    var status = document.getElementById('status');
-    status.textContent = 'Options saved.';
-    setTimeout(function() {
-      status.textContent = '';
-    }, 1500);
+    console.log('Saved new default action: ' + selectedId);
   });
 }
 
-// Restores select box and checkbox state using the preferences
-// stored in chrome.storage.
-function restore_options() {
-  // Use default value color = 'red' and likesColor = true.
+
+function initOptions() {
+  populateDefaultActionSelect();
+}
+
+
+function populateDefaultActionSelect() {
+  fetch(chrome.runtime.getURL('/actions.json'))
+    .then((resp) => resp.json())
+    .then(function (actions) {
+      actions.forEach(function(action) {
+        $('#default-action-select').append(
+          $('<option>', { value: action.id, text: action.displayName })
+        );
+      });
+    })
+    .then(setSelectedElement);
+}
+
+
+function setSelectedElement() {
   chrome.storage.sync.get({
-    idList: ""
-  }, function(items) {
-    document.getElementById('idList').value = items.idList;
+    defaultAction: ""
+  }, function (items) {
+    defaultAction = items.defaultAction;
+    console.log("Read default action from storage: " + defaultAction);
+    if (defaultAction === "") {
+      $('#default-action-select>option:eq(0)').attr('selected', 'selected');
+      saveDefaultAction();
+    } else {
+      console.log($(`#default-action-select option[value=${defaultAction}]`))
+      $(`#default-action-select [value=${defaultAction}]`).attr('selected', 'selected');
+    }
   });
-}
-document.addEventListener('DOMContentLoaded', restore_options);
-document.getElementById('save').addEventListener('click',
-    save_options);
-
-function wikipedia(){
-  document.getElementById('idList').value = "firstHeading,toc";
+  $("#default-action-select").change(saveDefaultAction);
 }
 
-function clear(){
-  document.getElementById('idList').value = "";
-}
 
-document.getElementById('clear').addEventListener('click', clear);
-document.getElementById('wikipedia').addEventListener('click', wikipedia);
+document.addEventListener('DOMContentLoaded', initOptions);
